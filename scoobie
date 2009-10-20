@@ -5,6 +5,9 @@
 Scoobie: A command-line script suitable for deriving tags from filenames and
 performing conversions on them.
 
+Requires AtomicParsley to be installed. Please note the only existing user reports
+that AtomicParsley segfaults if run over the same file twice. This isn't my fault.
+
 """
 
 import os, sys, random, logging, glob, re
