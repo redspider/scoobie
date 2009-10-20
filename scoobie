@@ -1,0 +1,70 @@
+#!/usr/bin/env python
+
+"""
+
+Scoobie: A command-line script suitable for deriving tags from filenames and
+performing conversions on them.
+
+"""
+
+import os, sys, random, logging, glob, re
+from optparse import OptionParser
+
+
+logging.basicConfig(level=logging.WARN)
+log = logging.getLogger('Scoobie')
+
+class UnableToParseName(Exception):
+    pass
+
+class MetaData(object):
+    stik = None
+    series = None
+    name = None
+    season = None
+    episode = None
+    
+    def __init__(self, stik, filename):
+        self.stik = stik
+        m = re.match(r'([^\-]+)- S(\d+)E(\d+) - ([^\.]+).*', filename)
+        if not m:
+            raise UnableToParseName(filename)
+        self.series = m.group(1).strip()
+        self.season = int(m.group(2))
+        self.episode = int(m.group(3))
+        self.name = m.group(4).strip()
+    
+    def __str__(self):
+        return 'Series: "%s" Season: %d Episode: %d Name: "%s"' % (self.series, self.season, self.episode, self.name)
+
+def tag(path):
+    for source_file in glob.iglob(path):
+        log.debug("Matched %s for tagging" % source_file)
+        try:
+            metadata = MetaData('TV Show',os.path.basename(source_file))
+        except UnableToParseName, e:
+            log.warn("Unable to parse name '%s'" % str(e))
+        log.debug("Retrieved metadata for %s as %s" % (source_file, str(metadata)))
+        log.debug("Tagging")
+        print "Tagging %s" % source_file
+        command = 'AtomicParsley --stik "%(stik)s" --TVShowName "%(series)s" --TVEpisode "%(name)s" --TVEpisodeNum %(episode)d --TVSeasonNum %(season)d - "%(filename)s"' % dict(stik=metadata.stik, series=metadata.series, name=metadata.name, episode=metadata.episode, season=metadata.season, filename=source_file)
+        log.debug("Executing %s" % command)
+        os.system(command)
+    
+
+if __name__ == "__main__":
+    usage = "usage: %prog [options] [path]"
+    parser = OptionParser(usage="usage: %prog [options] filename")
+    parser.add_option("--verbose","-v",
+                      help = "print debugging output",
+                      action = "store_true")
+    (options, args) = parser.parse_args()
+    if options.verbose:
+        log.setLevel(logging.DEBUG)
+    
+    log.debug("Verbose mode: %s" % options.verbose)
+    path = args[0]
+    log.debug("Tagging path %s" % (path))
+    
+    tag(path)
+
