@@ -47,7 +47,7 @@ def tag(stik, path):
         log.debug("Retrieved metadata for %s as %s" % (source_file, str(metadata)))
         log.debug("Tagging")
         print "Tagging %s" % source_file
-        command = 'AtomicParsley --stik "%(stik)s" --TVShowName "%(series)s" --TVEpisode "%(name)s" --TVEpisodeNum %(episode)d --TVSeasonNum %(season)d - "%(filename)s"' % dict(stik=metadata.stik, series=metadata.series, name=metadata.name, episode=metadata.episode, season=metadata.season, filename=source_file)
+        command = 'AtomicParsley "%(filename)s" --stik "%(stik)s" --TVShowName "%(series)s" --TVEpisode "%(name)s" --TVEpisodeNum %(episode)d --TVSeasonNum %(season)d' % dict(stik=metadata.stik, series=metadata.series, name=metadata.name, episode=metadata.episode, season=metadata.season, filename=source_file)
         log.debug("Executing %s" % command)
         os.system(command)
     
