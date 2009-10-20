@@ -53,8 +53,7 @@ def tag(path):
     
 
 if __name__ == "__main__":
-    usage = "usage: %prog [options] [path]"
-    parser = OptionParser(usage="usage: %prog [options] filename")
+    parser = OptionParser(usage="usage: %prog [options] glob")
     parser.add_option("--verbose","-v",
                       help = "print debugging output",
                       action = "store_true")
