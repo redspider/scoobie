@@ -37,11 +37,11 @@ class MetaData(object):
     def __str__(self):
         return 'Series: "%s" Season: %d Episode: %d Name: "%s"' % (self.series, self.season, self.episode, self.name)
 
-def tag(path):
+def tag(stik, path):
     for source_file in glob.iglob(path):
         log.debug("Matched %s for tagging" % source_file)
         try:
-            metadata = MetaData('TV Show',os.path.basename(source_file))
+            metadata = MetaData(stik,os.path.basename(source_file))
         except UnableToParseName, e:
             log.warn("Unable to parse name '%s'" % str(e))
         log.debug("Retrieved metadata for %s as %s" % (source_file, str(metadata)))
@@ -57,6 +57,11 @@ if __name__ == "__main__":
     parser.add_option("--verbose","-v",
                       help = "print debugging output",
                       action = "store_true")
+    parser.add_option("--stik","-s",
+                      help = "specify stik",
+                      default = "10",
+                      type = "string",
+                      action = "store")
     (options, args) = parser.parse_args()
     if options.verbose:
         log.setLevel(logging.DEBUG)
@@ -65,5 +70,5 @@ if __name__ == "__main__":
     path = args[0]
     log.debug("Tagging path %s" % (path))
     
-    tag(path)
+    tag(options.stik, path)
 
