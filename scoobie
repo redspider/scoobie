@@ -59,7 +59,7 @@ if __name__ == "__main__":
                       action = "store_true")
     parser.add_option("--stik","-s",
                       help = "specify stik",
-                      default = "10",
+                      default = "TV Show",
                       type = "string",
                       action = "store")
     (options, args) = parser.parse_args()
